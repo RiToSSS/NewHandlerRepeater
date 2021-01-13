@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Handler-Repeater",
+  "version": "1.0",
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+
+      "js": [
+        "jquery.min.js",
+        "script.js"
+      ],
+
+      "run_at": "document_idle"
+    }
+  ],
+
+  "background": {
+    "scripts": [
+      "jquery.min.js",
+      "background.js"
+    ],
+    "persistent": false
+  },
+
+  "permissions": ["<all_urls>"],
+
+  "browser_action": { 
+    "default_title": "HandlerRepeater"
+  } 
+}
