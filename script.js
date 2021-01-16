@@ -16,7 +16,11 @@
                 selectors = document.querySelectorAll(el);
                 selectors[x].click();
                 if (el.indexOf("input") == 0) {
-                    selectors[x].value = message.valueInput;
+                    chrome.runtime.sendMessage({type: 'repeat', subtype: 'isGoing'}, function(message) {
+                        if (message.allow) {
+                            selectors[x].value = message.element;
+                        }
+                    });
                 }
             }
         });
@@ -50,7 +54,7 @@
                             el = el.substring(0, el.indexOf(" "));
                         }
                         selectors = document.querySelectorAll(el);
-                        chrome.runtime.sendMessage({type:'record', subtype: 'pushInput', value: selectors[x].value});
+                        chrome.runtime.sendMessage({type:'record', subtype: 'push', element: selectors[x].value});
                     }
                 }
         
@@ -98,7 +102,7 @@
             chrome.runtime.sendMessage({type: 'record', subtype: 'getInfo'}, function(message) {
                 // Загрузку из фоновой страницы нельзя симитировать через нажатие <input> (File chooser dialog can only be shown with a user activation)
                 if (!message.status) {
-                    $('body').append("<input type='file' style='position: fixed; top: 0; left: 0;' id='uploadJSONfile'/>");
+                    $('body').append("<input type='file' style='position: fixed; z-index: 999999; top: 0; left: 0;' id='uploadJSONfile'/>");
                 }
             });
         }

@@ -3,6 +3,7 @@
    let record = false;
    let repeat = false;
    let selectors;
+   let text_input;
    let url;
    let index_selector = 0;
    let index_text = 0;
@@ -39,8 +40,8 @@
             $('a#download').remove();
          }
       }
-      selectors = [[],[]];
-      record ? chrome.browserAction.setBadgeText({text: "On"}) : chrome.browserAction.setBadgeText({text: "Off"});
+      selectors = [];
+      chrome.browserAction.setBadgeText({text: record ? "On" : "Off"});
    });
 
    chrome.runtime.onMessage.addListener(function(message, sender, response) {
@@ -55,11 +56,7 @@
          }
 
          if (message.subtype == 'push') {
-            selectors[0].push(message.element);
-         }
-
-         if (message.subtype == 'pushInput') {
-            selectors[1].push(message.value);
+            selectors.push(message.element);
          }
       }
 
@@ -74,21 +71,15 @@
 
          if (message.subtype == 'isGoing') {
             if (repeat) {
-               if (index_selector < selectors[0].length) {
-                  if (selectors[0][index_selector].indexOf("input") == 0) {
-                     response ({allow: repeat, element: selectors[0][index_selector], valueInput: selectors[1][index_text]});
-                     index_text++;
-                  } else {
-                     response ({allow: repeat, element: selectors[0][index_selector]});
-                  }
-                  index_selector++;
+               if (index_selector < selectors.length) {
+                     response ({allow: repeat, element: selectors[index_selector]});
+                     index_selector++;
                } else {
                   index_selector = 0;
                   index_text = 0;
                   repeat = false;
                }
             } else {
-               repeat = false;
                response ({allow: repeat});
             }
          }
